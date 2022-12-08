@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+
+    <title>Kavling Muria Jaya</title>
+
+    <style>
+        * {
+            font-family: 'Gowun Batang', serif;
+            color: white;
+        }
+        
+        body {
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.pinhome.id/kamus-istilah-properti/wp-content/uploads/2021/08/15921-kavling-harian-bisnis-1024x479.jpg');
+            background-position: center;
+            background-size: cover;
+        }
+        
+        h1 {
+            font-weight: bold;
+        }
+        
+        .order {
+            width: 500px;
+            margin: 60px auto 0px auto;
+            padding-bottom: 60px;
+        }
+        
+        .mybtn {
+            width: 100%;
+        }
+        
+        .order>table {
+            margin: 40px 0;
+            font-size: 18px;
+        }
+        
+        option {
+            color: black;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            show_order();
+        });
+
+        function show_order() {
+            $('#order-box').empty()
+            $.ajax({
+                type: 'GET',
+                url: '/mars',
+                data: {},
+                success: function (response) {
+                    let rows = response['orders']
+                    for (let i = 0; i < rows.length; i++) {
+                        let name = rows[i]['nama']
+                        let address = rows[i]['alamat']
+                        let size = rows[i]['harga']
+
+                        let temp_html = `<tr>
+                                            <td>${name}</td>
+                                            <td>${address}</td>
+                                            <td>${size}</td>
+                                        </tr>`
+                        $('#orders-box').append(temp_html)
+                    }
+
+                }
+            });
+        }
+
+        function save_order() {
+            let name = $('#name').val()
+            let address = $('#address').val()
+            let size = $('#size').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/mars',
+                data: { name_give:name, 
+                        address_give:address, 
+                        size_give:size },
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="mask"></div>
+    <div class="order">
+        <h1>Beli kavling Muria Jaya!</h1>
+        <h3>Harga 10</h3>
+        <p>
+            Kami bingung mau beli tanah dimana?<br /> Beli di kavling muria jaya!
+        </p>
+        <div class="order-info">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Nama</span>
+                <input id="name" type="text" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Alamat</span>
+                <input id="address" type="text" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="size">harga</label>
+                <select class="form-select" id="size">
+                    <option selected>-- pilih harga --</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+            <button onclick="save_order()" type="button" class="btn btn-warning mybtn">Simpan order</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nama</th>
+                    <th scope="col">Alamat</th>
+                    <th scope="col">Harga</th>
+                </tr>
+            </thead>
+            <tbody id="orders-box">
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
